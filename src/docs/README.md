@@ -64,127 +64,97 @@ src/docs/
 - Guia de estilos
 - Prototipação interativa
 
-### 4. Guias de Desenvolvimento
-- Setup do ambiente
-- Padrões de código
-- Convenções de commits
-- Guia de contribuição
-- Boas práticas
+---
 
-## Diagramas a Serem Criados
-1. **Diagrama de Contexto (C4)**: Visão geral do sistema
-2. **Diagrama de Container**: Componentes principais
-3. **Diagrama de Componentes**: Estrutura interna
-4. **Diagrama ER**: Modelo de dados
-5. **Diagramas de Sequência**: Fluxos principais
-   - Registro de abastecimento
-   - Autenticação de usuário
-   - Geração de relatórios
-6. **Diagramas de Caso de Uso**: Interações do usuário
-7. **Fluxogramas**: Processos de negócio
+## Wireframe Detalhado — Tela: Painel Geral
 
-## Wireframes das Telas Principais
+Objetivo: visão executiva do sistema com KPIs, gráficos, lista recente de abastecimentos e alertas.
 
-### 1. Painel Geral (Dashboard)
+Resumo de layout:
+- Header superior com logo, busca, ações rápidas e perfil
+- Menu lateral fixo com navegação principal
+- Área principal com: KPIs no topo, grade de gráficos, lista de abastecimentos recentes e área de alertas
+
+Legenda de componentes:
+- H = Header
+- S = Sidebar (menu lateral)
+- K = Card KPI
+- G = Gráfico (linha/barras/pizza)
+- L = Lista de abastecimentos
+- A = Alertas/Notificações
 
 ```mermaid
-graph TD
-    A[Header/Navigation Bar] --> B[Menu Lateral]
-    A --> C[Área Principal]
-    
-    B --> B1[Dashboard]
-    B --> B2[Abastecimentos]
-    B --> B3[Frotas]
-    B --> B4[Relatórios]
-    B --> B5[Configurações]
-    
-    C --> C1[Seção KPIs]
-    C --> C2[Seção Gráficos]
-    C --> C3[Seção Resumos]
-    
-    C1 --> C1A[Total Abastecimentos]
-    C1 --> C1B[Consumo do Mês]
-    C1 --> C1C[Economia Gerada]
-    C1 --> C1D[Veículos Ativos]
-    
-    C2 --> C2A[Gráfico Consumo Mensal]
-    C2 --> C2B[Gráfico por Veículo]
-    
-    C3 --> C3A[Últimos Abastecimentos]
-    C3 --> C3B[Alertas e Notificações]
+flowchart TB
+  %% Contêiner principal
+  subgraph APP[Dashboard - Painel Geral]
+    direction TB
+
+    %% Header
+    H[Header: Logo | Busca | Ações rápidas | Perfil]:::header
+
+    %% Corpo com duas colunas: Sidebar + Conteúdo
+    subgraph BODY
+      direction LR
+      S[Menu Lateral:\n- Painel Geral\n- Abastecimentos\n- Veículos\n- Postos\n- Relatórios\n- Configurações]:::sidebar
+
+      subgraph MAIN[Conteúdo]
+        direction TB
+        %% Linha de KPIs
+        subgraph KPI_ROW[KPIs]
+          direction LR
+          K1[KPI: Custo/mês]:::kpi
+          K2[KPI: Litros/mês]:::kpi
+          K3[KPI: Ticket médio]:::kpi
+          K4[KPI: Desvio consumo]:::kpi
+        end
+
+        %% Grade de gráficos
+        subgraph CHARTS[Gráficos]
+          direction LR
+          G1[Gráfico Linha: Consumo vs Tempo]:::chart
+          G2[Gráfico Barras: Custo por veículo]:::chart
+          G3[Pizza: Combustível por tipo]:::chart
+        end
+
+        %% Lista e alertas em duas colunas
+        subgraph LIST_ALERTS[Registros e Alertas]
+          direction LR
+          L[Lista Abastecimentos Recentes\n- Data | Veículo | Litros | Custo | Posto\n- Ações: Ver, Editar]:::list
+          A[Alertas/Anomalias\n- Odômetro inconsistente\n- Valor acima do teto\n- Desvio consumo]:::alert
+        end
+      end
+    end
+  end
+
+  classDef header fill:#f5f7fb,stroke:#c9d2e3,color:#1f2937;
+  classDef sidebar fill:#f8fafc,stroke:#d1d5db,color:#111827;
+  classDef kpi fill:#ffffff,stroke:#e5e7eb,color:#111827;
+  classDef chart fill:#ffffff,stroke:#e5e7eb,color:#111827;
+  classDef list fill:#ffffff,stroke:#e5e7eb,color:#111827;
+  classDef alert fill:#fff7ed,stroke:#fdba74,color:#9a3412;
 ```
 
-**Descrição do Layout - Painel Geral:**
-- **Header**: Barra superior com logo, título do sistema e menu do usuário
-- **Menu Lateral**: Navegação principal fixa com ícones e labels
-- **Área de KPIs**: Cards com métricas importantes (4 principais)
-- **Seção de Gráficos**: Dois gráficos principais lado a lado
-- **Área de Resumos**: Lista dos últimos abastecimentos e área de alertas
+Estrutura e estados esperados:
+- Header: campo de busca global, ícone “+ Novo Abastecimento”, notificações e avatar
+- Sidebar: itens com ícone, estado ativo e colapsável
+- KPIs: cards responsivos (4 por linha em desktop, 2 em tablet, 1 em mobile), com indicador de variação (% e seta)
+- Gráficos: placeholders com legendas e períodos (filtro: 7d, 30d, 90d)
+- Lista de abastecimentos: paginação, ordenação por data desc, filtros rápidos (veículo, posto, período)
+- Alertas: níveis (info/atenção/crítico), botões “ver detalhes” e “silenciar”
 
-### 2. Registro de Abastecimento
+Detalhamento de dados por componente:
+- KPIs: {titulo, valor, variacaoPct, periodo}
+- Gráficos: {tipo, serie[], categorias[], periodo}
+- Lista: {id, dataHora, veiculo, litros, custo, posto, status}
+- Alertas: {id, severidade, mensagem, origem, criadoEm}
 
-```mermaid
-graph TD
-    A[Header/Navigation Bar] --> B[Menu Lateral]
-    A --> C[Formulário Principal]
-    
-    C --> C1[Seção Identificação]
-    C --> C2[Seção Dados Abastecimento]
-    C --> C3[Seção Documentação]
-    C --> C4[Botões Ação]
-    
-    C1 --> C1A[Campo Placa Veículo]
-    C1 --> C1B[Campo Motorista]
-    C1 --> C1C[Campo Data/Hora]
-    
-    C2 --> C2A[Tipo Combustível]
-    C2 --> C2B[Quantidade Litros]
-    C2 --> C2C[Preço por Litro]
-    C2 --> C2D[Valor Total]
-    C2 --> C2E[Odômetro]
-    C2 --> C2F[Posto Combustível]
-    
-    C3 --> C3A[Upload Nota Fiscal]
-    C3 --> C3B[QR Code Scanner]
-    C3 --> C3C[Área Preview Arquivo]
-    
-    C4 --> C4A[Botão Cancelar]
-    C4 --> C4B[Botão Salvar Rascunho]
-    C4 --> C4C[Botão Registrar]
-```
+Acessibilidade e UX:
+- Navegação por teclado: focos visíveis e ordem lógica
+- Contraste AA em cards de alerta e KPIs
+- Rótulos e descrições para leitores de tela em gráficos e ações
+- Mensagens vazias: estados “sem registros” e “sem alertas” com CTAs relevantes
 
-**Descrição do Layout - Registro de Abastecimento:**
-- **Seção Identificação**: Campos básicos para identificar o veículo e contexto
-- **Seção Dados**: Formulário principal com todos os campos do abastecimento
-- **Seção Documentação**: 
-  - Área de upload com drag & drop para nota fiscal
-  - Botão para scanner QR Code da nota fiscal
-  - Preview do arquivo enviado
-- **Botões de Ação**: Três opções (Cancelar, Salvar como Rascunho, Registrar)
-
-### 3. Fluxo de Interação Principal
-
-```mermaid
-sequenceDiagram
-    participant U as Usuário
-    participant D as Dashboard
-    participant F as Formulário
-    participant S as Sistema
-    
-    U->>D: Acessa Dashboard
-    D->>U: Exibe KPIs e resumos
-    U->>D: Clica "Novo Abastecimento"
-    D->>F: Redireciona para formulário
-    F->>U: Exibe formulário vazio
-    U->>F: Preenche dados obrigatórios
-    U->>F: Upload da nota fiscal
-    F->>U: Valida campos em tempo real
-    U->>F: Clica "Registrar"
-    F->>S: Envia dados para backend
-    S->>F: Confirma registro
-    F->>D: Redireciona para dashboard
-    D->>U: Atualiza KPIs com novo registro
-```
+---
 
 ## Ferramentas Sugeridas
 - **Diagramas**: Draw.io, Lucidchart, PlantUML, Mermaid
@@ -200,5 +170,5 @@ sequenceDiagram
 5. Revise periodicamente para garantir precisão
 
 ## Status
-✅ **Wireframes Básicos** - Adicionados diagramas iniciais para Painel Geral e Registro de Abastecimento
-🚧 **Em construção** - Aguardando documentação detalhada e implementação
+✅ **Wireframes Básicos** — Painel Geral documentado com diagrama Mermaid
+🚧 **Em construção** — Aguardando documentação detalhada e implementação
