@@ -1,5 +1,101 @@
 # Documentação - Sistema de Automação de Abastecimento de Frotas
 
+## Wireframe: Login/Autenticação
+Tela de entrada segura e acessível para todos os perfis, suportando autenticação por senha e provedores OAuth, com políticas de senha, estados de erro/bloqueio e fluxo completo de recuperação.
+
+### Objetivos
+- Permitir autenticação rápida e segura para Admin, Gerente e Motorista
+- Reduzir atritos com opções "Lembrar-me" e SSO (Google/OAuth)
+- Garantir conformidade (política de senha, reCAPTCHA, proteção contra brute force)
+- Acessível (teclado, leitores de tela) e responsiva (mobile-first)
+
+### Header
+- Logo (alt="Automação Abastecimento") à esquerda
+- Título da página: "Entrar" (h1, única instância por página)
+- Link para Ajuda/FAQ e Política de Privacidade (abre em nova aba)
+- Indicador de ambiente (se aplicável): Produção, Homologação
+
+### Formulário de Login
+- Campos:
+  - Usuário/E-mail: input type=email, label visível "Usuário ou e-mail", autocomplete="username", placeholder opcional
+  - Senha: input type=password, label "Senha", autocomplete="current-password", botão "Mostrar/ocultar" com aria-pressed
+  - Seleção de Perfil: radio group ou select com opções: Administrador, Gerente, Motorista
+  - Lembrar-me: checkbox, descrição: "Mantenha-me conectado neste dispositivo"
+  - reCAPTCHA: widget compacto após os campos, com fallback acessível
+- Botões:
+  - Entrar: primário, largura cheia em mobile, desabilita durante envio
+  - "Continuar com Google" (ou provedor OAuth): secundário com ícone do provedor
+- Links auxiliares:
+  - "Esqueci minha senha" (navega para fluxo de redefinição)
+  - "Primeiro acesso? Solicitar conta" (opcional, se houver onboarding)
+
+### Validações e Mensagens de Erro
+- Validação cliente e servidor
+  - Usuário/E-mail: obrigatório; formato e-mail válido quando e-mail; mensagens: "Informe seu usuário ou e-mail" / "E-mail inválido"
+  - Senha: obrigatória; política ativa somente no cadastro/redefinição; no login apenas presença
+  - Perfil: obrigatório (se o sistema exigir)
+  - reCAPTCHA: obrigatório quando habilitado
+- Erros por campo: texto abaixo do input, cor de erro, aria-describedby associando a mensagem ao campo
+- Erros globais (banner):
+  - "Credenciais inválidas. Verifique e tente novamente."
+  - "Conta bloqueada por tentativas excessivas. Tente novamente em 15 minutos."
+  - "Usuário pendente de aprovação pelo administrador."
+  - "Acesso negado para o perfil selecionado."
+
+### Política de Senha (exibida em cadastro/redefinição, referenciada aqui)
+- Mínimo 8-12 caracteres, com pelo menos 3 dos 4: maiúsculas, minúsculas, números, símbolos
+- Sem dados óbvios (nome, placa, CPF), sem sequências comuns (123456, qwerty)
+- Expiração opcional para perfis administrativos (p.ex., 180 dias) com lembrete antecipado
+
+### Feedback e Estados
+- Loading: ao enviar, botão "Entrar" mostra spinner e texto "Entrando...", formulário desabilitado; aria-busy no form; aria-live polite para feedback
+- Sucesso: redireciona para Home ou para a rota originalmente solicitada; mensagem de boas-vindas opcional
+- Erro: mantém valores (exceto senha, conforme política); foca no primeiro campo inválido
+- Tentativas e bloqueio: contador regressivo "Tente novamente em 14:59" com aria-live assertive
+- Aprovação pendente: instrução para contatar o administrador ou verificar e-mail
+
+### Acessibilidade
+- Ordem de tab lógica; atalhos: Enter envia, Esc limpa erros não persistentes
+- Labels explícitos e associação via for/id; tamanho de toque >= 44px em mobile
+- Contraste AA/AAA, foco visível; não depender só de cor para estados
+- Suporte completo a leitores de tela: headings, landmarks (main, form), role=alert para erros
+
+### Responsividade
+- Mobile-first: layout em coluna, inputs largura 100%
+- Tablet: duas colunas opcionais (usuário/senha lado a lado), OAuth ao lado
+- Desktop: card central com largura máxima ~420px; ilustração lateral opcional
+
+### Fluxo de Redefinição de Senha
+1) Esqueci minha senha (solicitação)
+- Campo: e-mail ou usuário
+- reCAPTCHA
+- Botão: Enviar instruções
+- Feedback: "Se encontrarmos sua conta, enviaremos um e-mail com instruções"
+2) E-mail enviado
+- Conteúdo: link com token de uso único e validade (ex.: 60 min)
+- Proteção: não expõe se o e-mail existe
+3) Criar nova senha
+- Campos: Nova senha, Confirmar senha; indicador de força e requisitos atendidos
+- Validações: match, política atendida; feedback em tempo real
+- Botão: Salvar nova senha
+4) Sucesso
+- Mensagem: "Senha atualizada com sucesso"
+- Ação: "Ir para login" e opção "Entrar automaticamente" se vier de sessão autenticada
+
+### Estados Especiais: Bloqueio/Aprovação
+- Bloqueio automático por tentativas falhas (ex.: 5 falhas em 15 min); desbloqueio por tempo ou admin
+- Requerimento de aprovação: novos cadastros aguardam aprovação do admin; login bloqueado até aprovação
+- 2FA opcional para Admin: após senha, prompt de código (app/OTP); lembrar dispositivo por 30 dias
+
+### Considerações Técnicas
+- Proteções: rate limiting, detecção de IP/ASN suspeitos, captcha adaptativo, proteção CSRF nos formulários
+- Armazenamento seguro: senhas com hash forte (Argon2/bcrypt), cookies HttpOnly, Secure, SameSite=Lax/Strict
+- Sessão: renovação de sessão após login; expiração inativa; logout explícito
+- Auditoria: logs de login (sucesso/falha), motivo de bloqueio, origem (IP, user-agent)
+- Internacionalização: mensagens e labels em i18n; fuso horário para timestamps de bloqueio
+
+---
+
 ## Wireframe: Histórico/Consultas
 Tela para consulta e auditoria de abastecimentos com foco em produtividade, rastreabilidade, exportação e análise. Inclui header, filtros avançados, busca global, tabela/lista paginada, detalhamento lateral, estados de loading/vazio/erro, acessibilidade, responsividade, atalhos e drilldown.
 
@@ -55,137 +151,18 @@ Tela para consulta e auditoria de abastecimentos com foco em produtividade, rast
   - Scroll infinito (opcional) em mobile
   - Seleção múltipla de linhas para exportar apenas selecionadas
   - Linha com indicador visual se houver alerta/suspeita (ícone e cor de borda esquerda)
-
 - Limpar filtros: remove todos os chips e reseta para presets; confirmação opcional
 - Atualizar: recarrega dados preservando filtros; atalho Ctrl/Cmd+R (escopo local)
 
 ### Comportamentos de Estado
-- Loading:
-  - Shimmers/skeletons na tabela e no painel lateral
-  - Ícone girando no botão Aplicar
-  - Mensagem aria-live="polite": "Carregando resultados"
-- Vazio:
-  - Ilustração leve + texto: "Nenhum registro encontrado"
-  - Dicas: ajuste datas, remova filtros restritivos, verifique termos
-  - Botão: Limpar filtros
-- Erro:
-  - Banner vermelho com código/mensagem amigável e ID de correlação
-  - Ação: Tentar novamente; detalhe técnico colapsável para suporte
-  - aria-live="assertive"; foco movimentado para o banner
-
-### Acessibilidade
-- Navegação total por teclado; ordem de tab lógica; foco visível
-- Tabela com roles adequados (table, rowgroup, row, columnheader, gridcell)
-- Botões com rótulos e aria-pressed/expanded quando aplicável
-- Chips de filtro com botão de remoção acessível (aria-label específico)
-- Mensagens não dependentes apenas de cor; contrastes AA
-- Atalhos documentados e desativáveis pelo usuário
-
-### Responsividade
-- Desktop: layout em 2 painéis (lista à esquerda, detalhes em side panel à direita)
-- Tablet: lista full-width; painel abre como sobreposição
-- Mobile: lista em cartões empilhados; filtros em sheet inferior; paginação por scroll
-
-### Atalhos de Teclado
-- Ctrl/Cmd+K: foco na busca global
-- Ctrl/Cmd+F: abrir/fechar filtros
-- Ctrl/Cmd+Enter: aplicar filtros
-- Ctrl/Cmd+Shift+E: exportar
-- ↑/↓: navegar entre linhas; Enter: abrir detalhes; Esc: fechar painel
-
-### Exemplos de Estados (Mermaid)
-```
-mermaid
-flowchart TB
-  subgraph Header
-    H1[Histórico / Consultas]
-    H2[Chips de filtros aplicados]
-    H3[(Exportar | Filtrar | Limpar | Atualizar)]
-  end
-  subgraph Lista
-    L1[Tabela paginada]
-    L2{Estados}
-    L2 -->|Loading| L3[Shimmers]
-    L2 -->|Vazio| L4[Nenhum registro]
-    L2 -->|Erro| L5[Banner + Tentar novamente]
-  end
-  subgraph Detalhe
-    D1[Side panel]
-    D2[Resumo]
-    D3[Validações]
-    D4[Localização]
-    D5[Documentos]
-    D6[Auditoria]
-  end
-  Header --> Lista --> Detalhe
-```
-
-### Observações Técnicas
-- Paginação lado-servidor; filtros e ordenação server-side para escalabilidade
-- Exportação assíncrona com notificação quando pronta (para grandes volumes)
-- Debounce em busca e filtros; cancelamento de requisições anteriores
-- Feature flags para módulos opcionais (mapa, reordenação de colunas)
-- Telemetria: tempo para primeira resposta, taxa de erro, termos de busca
-
----
+- Loading: skeletons de linhas; spinner em ações
+- Vazio: ilustração, texto "Nenhum resultado para os filtros aplicados" e botão Limpar filtros
+- Erro: banner com ID de correlação e ação Tentar novamente
+- Seleção: contador de selecionados, ação de exportar/compartilhar selecionados
 
 ## Wireframe: Relatórios
-Tela para análise e comunicação de indicadores de abastecimento com foco em insights visuais, comparações e exportação. Cobre header, seleção de tipo, filtros avançados, área de visualização (gráficos interativos e tabela), exportar/compartilhar, ajustes de período e agrupamento, estados (loading, vazio, erro), responsividade e acessibilidade, com exemplos práticos e fluxo de navegação.
-
-### Objetivos
-- Fornecer visão consolidada de gastos, consumo, desempenho e comparativos por período
-- Permitir exploração por diferentes agrupamentos (dia/semana/mês, veículo, motorista, posto, produto)
-- Facilitar exportação em múltiplos formatos e compartilhamento com stakeholders
-- Permitir salvar e reutilizar configurações de relatórios (favoritos)
-
-### Header
-- Título: "Relatórios"
-- Breadcrumb: Início > Relatórios
-- Ações: Exportar (.CSV/.XLSX/.PDF/.PNG), Compartilhar (link, e-mail), Salvar como favorito, Atualizar
-- Indicadores rápidos: Período selecionado, Agrupamento atual, Filtros ativos (chips)
-
-### Seleção de Tipo de Relatório
-- Tipos disponíveis (tabs ou cards com ícone):
-  - Gastos: total R$, custo por km, custo por litro
-  - Consumo: km/L, L/100km, variação vs. período anterior
-  - Desempenho: eficiência por veículo/motorista, abastecimentos fora do padrão
-  - Comparativo: posto A vs. B, rotas, produtos, frota X vs. Y
-  - Exportação: assistente para gerar datasets personalizados sem visualização
-- Interações:
-  - Troca de tipo mantém filtros e período, mas altera widgets/visualizações
-  - Tooltip explicando cada tipo com exemplos de perguntas respondidas
-
-### Filtros Avançados
-- Controles principais: Abrir filtros, Aplicar, Limpar
-- Campos:
-  - Período: intervalo [início..fim] com presets (Hoje, 7d, 30d, MTD, YTD, Últimos 12 meses, Personalizado)
-  - Agrupamento: Dia, Semana, Mês, Trimestre, Ano
-  - Veículo: múltipla seleção por placa/frota; busca
-  - Motorista: múltipla seleção; busca
-  - Posto: múltipla seleção; dependente de cidade/UF opcional
-  - Produto: Diesel S10, S500, Gasolina, Etanol, Arla32
-  - Centro de custo/Projeto (opcional)
-  - Faixa de valor e quantidade (opcional)
-- Chips exibem filtros aplicados com ação de remover individualmente
-- Persistência por usuário e opção de "Salvar preset de filtros"
-
-### Área de Visualização
-- Layout adaptável com grade de widgets:
-  - Gráficos interativos: colunas, linhas, área, pizza/donut, barras empilhadas, heatmap de calendário
-  - Interações: hover com tooltips detalhados, highlight por série, esconder/mostrar série na legenda, zoom por seleção, pan, reset zoom
-  - Cross-filter: clicar em um ponto/segmento aplica filtro contextual (ex.: clicar em um posto filtra os demais widgets)
-  - Drilldown: duplo clique em um ponto (ex.: mês -> semana -> dia -> lista de abastecimentos)
-- Tabela de apoio:
-  - Tabela sumarizada com mesmas dimensões do agrupamento
-  - Colunas: período, métrica principal, variação %, top 3 contribuintes, outliers
-  - Ações por linha: ver detalhes, abrir consulta no Histórico (link profundo)
-- Cards de KPIs no topo: Total gasto, Média km/L, Custo por km, Nº abastecimentos; com delta vs. período anterior e setas de tendência
-
-### Exportar e Compartilhar
-- Exportar:
-  - Formatos: CSV, XLSX, PDF (relatório formatado), PNG (gráfico)
-  - Opções: intervalo de datas, colunas/métricas, agrupamento, separador decimal, fuso horário
-  - Lote assíncrono para grandes volumes com notificação quando pronto
+- Opções: intervalo de datas, colunas/métricas, agrupamento, separador decimal, fuso horário
+- Lote assíncrono para grandes volumes com notificação quando pronto
 - Compartilhar:
   - Gerar link de visualização somente leitura com expiração
   - Enviar por e-mail com mensagem personalizada
