@@ -10,37 +10,37 @@ Tela para criar/editar cadastro de caminhões com foco em consistência de dados
 - Reduzir erros com máscaras e validações em tempo real
 
 ### Estrutura do Layout
-- Header
-  - Título: "Cadastro de Caminhão"
-  - Breadcrumb: Início > Frota > Caminhões > Novo | Editar
-  - Ações rápidas: Ajuda (?) e Atalhos (teclado)
-- Conteúdo principal (grid responsivo)
-  - Coluna 1: Dados principais do caminhão
-  - Coluna 2: Upload de documentos e Histórico
+- Header  
+- Título: "Cadastro de Caminhão"  
+- Breadcrumb: Início > Frota > Caminhões > Novo | Editar  
+- Ações rápidas: Ajuda (?) e Atalhos (teclado)
+- Conteúdo principal (grid responsivo)  
+- Coluna 1: Dados principais do caminhão  
+- Coluna 2: Upload de documentos e Histórico
 - Barra de ações fixa no rodapé: Cancelar | Salvar
 
 ### Campos Principais
-- Placa (obrigatório)
-  - Máscara BR: AAA#A## (Mercosul) e validação por UF opcional; normalização para maiúsculas
-  - Única no sistema; checar duplicidade ao desfocar
-- Renavam (obrigatório)
-  - 11 dígitos; validação de dígito verificador; apenas números
-- Modelo (obrigatório)
-  - Texto; sugestões por autocomplete (base interna)
-- Fabricante (obrigatório)
-  - Select/autocomplete: Volvo, Scania, Mercedes-Benz, VW, Iveco, etc.
-- Ano (obrigatório)
-  - Numérico; intervalo razoável: 1970..ano atual+1
-- Cor (opcional)
-  - Select/autocomplete; permitir livre texto sob permissão
-- Frota (obrigatório)
-  - Select da(s) frotas cadastradas; exibe código/nome; pesquisa por texto
-- Status (obrigatório)
-  - Ativo, Inativo, Em manutenção, Baixado
-- Vincular Motorista (opcional)
-  - Select com busca; mostrar CPF/ID e situação (ativo/inativo)
-- Observações (opcional)
-  - Multilinha, 0–1000 caracteres
+- Placa (obrigatório)  
+- Máscara BR: AAA#A## (Mercosul) e validação por UF opcional; normalização para maiúsculas  
+- Única no sistema; checar duplicidade ao desfocar
+- Renavam (obrigatório)  
+- 11 dígitos; validação de dígito verificador; apenas números
+- Modelo (obrigatório)  
+- Texto; sugestões por autocomplete (base interna)
+- Fabricante (obrigatório)  
+- Select/autocomplete: Volvo, Scania, Mercedes-Benz, VW, Iveco, etc.
+- Ano (obrigatório)  
+- Numérico; intervalo razoável: 1970..ano atual+1
+- Cor (opcional)  
+- Select/autocomplete; permitir livre texto sob permissão
+- Frota (obrigatório)  
+- Select da(s) frotas cadastradas; exibe código/nome; pesquisa por texto
+- Status (obrigatório)  
+- Ativo, Inativo, Em manutenção, Baixado
+- Vincular Motorista (opcional)  
+- Select com busca; mostrar CPF/ID e situação (ativo/inativo)
+- Observações (opcional)  
+- Multilinha, 0–1000 caracteres
 
 ### Upload de Documentos
 - Tipos aceitos: CRLV (PDF/JPG/PNG), Licenciamento, Foto do veículo, Outros
@@ -50,89 +50,144 @@ Tela para criar/editar cadastro de caminhões com foco em consistência de dados
 - Validações: tamanho máx (ex.: 10 MB/arquivo), tipos permitidos, verificação de duplicados por hash
 
 ### Histórico do Caminhão
-- Aba/box "Histórico"
-  - Eventos: mudanças de status, mudança de frota, vinculação/desvinculação de motorista, edições de campos-chave
-  - Registro: data/hora, usuário, antes/depois
-  - Links para registros relacionados (ordens de serviço, abastecimentos, multas)
+- Aba/box "Histórico"  
+- Eventos: mudanças de status, mudança de frota, vinculação/desvinculação de motorista, edições de campos-chave
 
-### Barra de Ações
-- Cancelar: retorna para listagem; se houver alterações não salvas, dialog de confirmação
-- Salvar: valida todos os campos; mostra spinner, bloqueia duplo clique, feedback ao concluir
+---
 
-### Regras de Validação
-- Placa: formato válido, único
-- Renavam: 11 dígitos com DV válido
-- Modelo/Fabricante: obrigatórios
-- Ano: número inteiro, dentro do intervalo permitido
-- Frota: obrigatório e existente
-- Status: obrigatório
-- Observações: limite de caracteres
-- Documentos: tipo e tamanho permitidos
-- Vincular Motorista: se motorista inativo, impedir seleção com mensagem
+## Wireframe: Cadastro de Motorista
+Tela para criar/editar cadastro de motoristas com foco em validação de dados legais (CPF, RG, CNH), vínculo com frota/caminhão e gestão de documentos.
 
-### Mensagens de Erro/Sucesso
-- Erro por campo (inline) e resumo no topo
-  - "Placa em formato inválido. Exemplo: ABC1D23"
-  - "RENAVAM inválido"
-  - "Ano fora do intervalo permitido (1970–{ano_atual+1})"
-  - "Placa já cadastrada em outro veículo"
-  - "Motorista selecionado está inativo"
-- Sucesso
-  - "Caminhão salvo com sucesso"
-- Avisos
-  - "Documento próximo do vencimento"
+### Header
+- Título: "Cadastro de Motorista"
+- Breadcrumb: Início > Frota > Motoristas > Novo | Editar
+- Ações rápidas: Ajuda (?), Atalhos, Exportar (quando em modo edição)
+
+### Layout (grid responsivo)
+- Coluna Esquerda: Dados pessoais e de contato
+- Coluna Direita: CNH, vínculos, upload de documentos e histórico
+- Rodapé fixo: barra de ações com Cancelar | Salvar
+
+### Campos
+- Nome completo (obrigatório)  
+- Texto; 3–120 chars; capitalização de nomes; proibir números/símbolos indevidos
+- CPF (obrigatório)  
+- Máscara 000.000.000-00; validação de dígitos; único no sistema; checar duplicidade ao desfocar
+- RG (obrigatório)  
+- Texto/numérico conforme UF; permitir dígito/letra; 5–20 chars
+- Data de nascimento (obrigatório)  
+- Datepicker; idade mínima 18 anos
+- Endereço (obrigatório)  
+- Campos: CEP (mask 00000-000 + auto-preenchimento por API), Logradouro, Número, Complemento (opcional), Bairro, Cidade, UF (select)
+- Telefone (obrigatório)  
+- Máscara dinâmica: (00) 0000-0000 | (00) 00000-0000; DDI opcional
+- E-mail (obrigatório)  
+- Formato RFC; checagem MX opcional; evitar domínios descartáveis
+- CNH  
+- Categoria (select: A, B, C, D, E),  
+- Validade (data obrigatória; alerta quando faltarem 60 dias),  
+- Número (obrigatório; 11 dígitos),  
+- UF emissora (select),  
+- Foto (upload ou captura de câmera)
+- Frota vinculada (obrigatório)  
+- Select com busca; exibe código/nome; permite múltiplas frotas se regra do negócio permitir
+- Caminhão vinculado (opcional)  
+- Select com busca; exibe placa/modelo; bloqueia se motorista estiver inativo
+- Status (obrigatório)  
+- Ativo, Inativo, Afastado, Em treinamento
+
+### Upload de documentos
+- Tipos: CNH (frente/verso), Foto do motorista, Comprovante de residência (PDF/JPG/PNG)
+- Interações: arrastar e soltar, seleção múltipla, captura por câmera (mobile)
+- Regras: tamanho máximo 10 MB/arquivo; formatos permitidos; antivírus/scan; hash p/ evitar duplicatas
+- Metadados por anexo: tipo, data de emissão, validade (quando aplicável), observação
+- Ações: visualizar/preview, girar imagem, recortar rosto (foto), baixar, renomear, remover
+
+### Histórico
+- Timeline de eventos: criação, edição de dados sensíveis (CPF, CNH, status), mudança de frota/caminhão, uploads/remoções de documentos
+- Cada evento com: data/hora, usuário, descrição, diffs relevantes
+
+### Barra de ações (rodapé)
+- Cancelar: retorna à listagem, confirma se houver alterações não salvas
+- Salvar: validações síncronas e assíncronas; mostrar spinner; desabilita inputs durante processamento
+- Atalhos: Alt+C (Cancelar), Alt+S (Salvar)
+
+### Regras de validação
+- Nome: 3–120 chars; somente letras, espaços e hífens
+- CPF: dígitos válidos; não permitir CPF conhecido inválido (ex.: 000.000.000-00)
+- RG: tamanho 5–20; caracteres alfanuméricos e .-X
+- Data de nascimento: >= 18 anos; formato ISO ao salvar; timezone seguro
+- E-mail: regex robusta + normalização case-insensitive; domínio válido
+- Telefone: DDD válido (ANATEL); remover máscara ao salvar
+- CNH: número com 11 dígitos; validação de DV quando aplicável; categoria obrigatória; validade futura
+- Frota: obrigatório; referência existente
+- Status: obrigatório; se Inativo/Afastado, impedir vínculo com caminhão
+
+### Mensagens
+- Sucesso: "Motorista salvo com sucesso."
+- Erros gerais: "Não foi possível salvar. Verifique os campos destacados."
+- Erros por campo:  
+  - CPF inválido/duplicado  
+  - CNH vencida ou faltando em X dias  
+  - E-mail inválido  
+  - Telefone inválido  
+  - Campos obrigatórios ausentes
+- Alertas:  
+  - "CNH vence em X dias."  
+  - "Motorista inativo não pode ser vinculado a caminhão."
+
+### Estados da tela
+- Inicial: formulário vazio; salvar desabilitado até mínimos obrigatórios (nome, CPF, status)
+- Preenchimento: validações em tempo real; tooltips de ajuda
+- Processando: loading/spinner; bloqueio de inputs
+- Sucesso: banner verde + redirecionar para Detalhe do Motorista ou permanecer com toast
+- Erro: banner vermelho + foco no primeiro erro
+- Edição: popula dados; registra diffs no histórico
+
+### Acessibilidade
+- Labels associados (for/id); aria-describedby para dicas/erros; aria-live=assertive para erros
+- Foco visível; contraste AA; navegação por teclado; rotação de foco correta ao abrir dialogs
+- Campos com role apropriado (combobox/listbox); mensagens não dependentes apenas de cor
+
+### Fluxo principal
+1) Usuário clica em Novo Motorista
+2) Preenche Nome, CPF, Status, e dados mínimos de contato
+3) (Opcional) Preenche CNH e vínculos (frota/caminhão) e anexa documentos
+4) Clica em Salvar
+5) Sistema valida (CPF/CNH, formatos, obrigatórios)
+6) Em sucesso, grava e redireciona ou mantém na página exibindo toast
 
 ### Responsividade
-- Desktop: 2 colunas; documentos e histórico na lateral direita
+- Desktop: 2 colunas (60/40); histórico e upload na direita
 - Tablet: 1–2 colunas fluídas; ações fixas no rodapé
-- Mobile: 1 coluna; grupos colapsáveis; botões full-width; suporte a captura de câmera no upload
-
-### Acessibilidade (A11y)
-- Labels for/id; aria-describedby para mensagens; aria-live=assertive para erros de formulário
-- Foco visível; contraste AA; navegação por teclado completa
-- Atalhos: Alt+C (Cancelar), Alt+S (Salvar)
-- Componentes com roles adequados (combobox, listbox, dialog)
-
-### Fluxo Básico
-1) Usuário acessa "Novo Caminhão"
-2) Preenche campos obrigatórios
-3) (Opcional) Vínculo de motorista e anexos
-4) Clica em Salvar
-5) Sistema valida; em caso de erro, destaca campos e posiciona o foco no primeiro erro
-6) Em sucesso, grava e redireciona para Detalhe do Caminhão
-
-### Estados da Tela
-- Inicial: formulário vazio; salvar desabilitado até mínimo de obrigatórios preenchidos
-- Preenchendo: botões ativos; alertas contextuais
-- Validando: botão Salvar com spinner; campos desabilitados
-- Sucesso: banner verde; redirecionamento/âncora para detalhe
-- Erro: banner vermelho + erros inline
-- Modo Edição: carrega dados existentes, permite alterar; logs no histórico
+- Mobile: 1 coluna; seções colapsáveis; botões full-width; suporte a câmera no upload
 
 ### Wireframe (Mermaid)
-```mermaid
+```
+mermaid
 flowchart TB
   subgraph Header
-    H1[Cadastro de Caminhão]
-    H2[Breadcrumb: Início > Frota > Caminhões > Novo|Editar]
+    H1[Cadastro de Motorista]
+    H2[Breadcrumb: Início > Frota > Motoristas > Novo|Editar]
     H3[(Ajuda / Atalhos)]
   end
   subgraph Conteúdo
     subgraph Coluna Esquerda
-      P1[Placa]
-      P2[RENAVAM]
-      P3[Modelo]
-      P4[Fabricante]
-      P5[Ano]
-      P6[Cor]
-      P7[Frota]
-      P8[Status]
-      P9[Vincular Motorista]
-      P10[Observações]
+      C1[Nome completo]
+      C2[CPF]
+      C3[RG]
+      C4[Data de nascimento]
+      C5[Endereço]
+      C6[Telefone]
+      C7[E-mail]
     end
     subgraph Coluna Direita
-      D1[Upload de Documentos]
-      D2[Histórico do Caminhão]
+      D1[CNH: categoria, validade, número, UF, foto]
+      D2[Frota vinculada]
+      D3[Caminhão vinculado]
+      D4[Status]
+      D5[Upload: CNH, Foto, Comprovante]
+      D6[Histórico]
     end
   end
   subgraph Ações
@@ -142,9 +197,9 @@ flowchart TB
   Header --> Conteúdo --> Ações
 ```
 
-### Regras Técnicas e Interações
-- Máscaras: placa, números; normalização e trimming
-- Autocomplete: mínimo 2 caracteres; setas+Enter; 5–10 sugestões
-- Persistência: salvar otimista com retry; idempotência por chave natural (placa)
-- Auditoria: registrar antes/depois de placa, renavam, frota, status, motorista
+### Regras técnicas e interações
+- Máscaras: CPF, telefone, CEP; normalização e trimming; uppercase quando aplicável
+- Autocomplete/busca: mínimo 2 caracteres; setas+Enter; 5–10 sugestões
+- Persistência: idempotência por CPF; retries exponenciais; controle de concorrência otimista (ETag/versão)
+- Auditoria: registrar alterações em CPF, CNH, status, vínculos, e dados de contato
 - Telemetria: eventos de validação falha/sucesso, upload, salvar, cancel
