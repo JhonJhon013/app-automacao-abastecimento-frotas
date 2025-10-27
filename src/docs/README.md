@@ -56,23 +56,6 @@ Tela para consulta e auditoria de abastecimentos com foco em produtividade, rast
   - Seleção múltipla de linhas para exportar apenas selecionadas
   - Linha com indicador visual se houver alerta/suspeita (ícone e cor de borda esquerda)
 
-### Visualização Detalhada (Side Panel/Modal)
-- Abertura por clique na linha ou botão "Ver detalhes"; mantém posição na lista
-- Conteúdo:
-  - Cabeçalho: ID, data/hora, status, ações rápidas (Exportar PDF, Copiar link, Imprimir)
-  - Seções:
-    - Resumo: veículo, motorista, posto, produto, quantidade, valor, método
-    - Validações: regras aplicadas (ex.: limite diário, desvio de rota, volume vs. tanque), resultado pass/fail
-    - Localização: mapa com rota opcional e distância do posto ao ponto do abastecimento
-    - Documentos: fotos/tickets anexados; visualizar/baixar
-    - Auditoria: histórico de alterações do registro (quem, quando, o quê)
-    - Metadados: ID externo, integrações, bico/bomba, dispositivo, versão do app
-  - Navegação dentro do painel: Próximo/Anterior registro
-- Drilldown: links para páginas dedicadas de Veículo, Motorista e Posto; relatório completo do abastecimento
-
-### Botões e Ações Principais
-- Exportar: CSV, XLSX, PDF; opções: tudo, página atual, seleção, período; respeita filtros
-- Filtrar: abre/expande área de filtros; atalho Ctrl/Cmd+F
 - Limpar filtros: remove todos os chips e reseta para presets; confirmação opcional
 - Atualizar: recarrega dados preservando filtros; atalho Ctrl/Cmd+R (escopo local)
 
@@ -111,7 +94,8 @@ Tela para consulta e auditoria de abastecimentos com foco em produtividade, rast
 - ↑/↓: navegar entre linhas; Enter: abrir detalhes; Esc: fechar painel
 
 ### Exemplos de Estados (Mermaid)
-```mermaid
+```
+mermaid
 flowchart TB
   subgraph Header
     H1[Histórico / Consultas]
@@ -142,3 +126,115 @@ flowchart TB
 - Debounce em busca e filtros; cancelamento de requisições anteriores
 - Feature flags para módulos opcionais (mapa, reordenação de colunas)
 - Telemetria: tempo para primeira resposta, taxa de erro, termos de busca
+
+---
+
+## Wireframe: Relatórios
+Tela para análise e comunicação de indicadores de abastecimento com foco em insights visuais, comparações e exportação. Cobre header, seleção de tipo, filtros avançados, área de visualização (gráficos interativos e tabela), exportar/compartilhar, ajustes de período e agrupamento, estados (loading, vazio, erro), responsividade e acessibilidade, com exemplos práticos e fluxo de navegação.
+
+### Objetivos
+- Fornecer visão consolidada de gastos, consumo, desempenho e comparativos por período
+- Permitir exploração por diferentes agrupamentos (dia/semana/mês, veículo, motorista, posto, produto)
+- Facilitar exportação em múltiplos formatos e compartilhamento com stakeholders
+- Permitir salvar e reutilizar configurações de relatórios (favoritos)
+
+### Header
+- Título: "Relatórios"
+- Breadcrumb: Início > Relatórios
+- Ações: Exportar (.CSV/.XLSX/.PDF/.PNG), Compartilhar (link, e-mail), Salvar como favorito, Atualizar
+- Indicadores rápidos: Período selecionado, Agrupamento atual, Filtros ativos (chips)
+
+### Seleção de Tipo de Relatório
+- Tipos disponíveis (tabs ou cards com ícone):
+  - Gastos: total R$, custo por km, custo por litro
+  - Consumo: km/L, L/100km, variação vs. período anterior
+  - Desempenho: eficiência por veículo/motorista, abastecimentos fora do padrão
+  - Comparativo: posto A vs. B, rotas, produtos, frota X vs. Y
+  - Exportação: assistente para gerar datasets personalizados sem visualização
+- Interações:
+  - Troca de tipo mantém filtros e período, mas altera widgets/visualizações
+  - Tooltip explicando cada tipo com exemplos de perguntas respondidas
+
+### Filtros Avançados
+- Controles principais: Abrir filtros, Aplicar, Limpar
+- Campos:
+  - Período: intervalo [início..fim] com presets (Hoje, 7d, 30d, MTD, YTD, Últimos 12 meses, Personalizado)
+  - Agrupamento: Dia, Semana, Mês, Trimestre, Ano
+  - Veículo: múltipla seleção por placa/frota; busca
+  - Motorista: múltipla seleção; busca
+  - Posto: múltipla seleção; dependente de cidade/UF opcional
+  - Produto: Diesel S10, S500, Gasolina, Etanol, Arla32
+  - Centro de custo/Projeto (opcional)
+  - Faixa de valor e quantidade (opcional)
+- Chips exibem filtros aplicados com ação de remover individualmente
+- Persistência por usuário e opção de "Salvar preset de filtros"
+
+### Área de Visualização
+- Layout adaptável com grade de widgets:
+  - Gráficos interativos: colunas, linhas, área, pizza/donut, barras empilhadas, heatmap de calendário
+  - Interações: hover com tooltips detalhados, highlight por série, esconder/mostrar série na legenda, zoom por seleção, pan, reset zoom
+  - Cross-filter: clicar em um ponto/segmento aplica filtro contextual (ex.: clicar em um posto filtra os demais widgets)
+  - Drilldown: duplo clique em um ponto (ex.: mês -> semana -> dia -> lista de abastecimentos)
+- Tabela de apoio:
+  - Tabela sumarizada com mesmas dimensões do agrupamento
+  - Colunas: período, métrica principal, variação %, top 3 contribuintes, outliers
+  - Ações por linha: ver detalhes, abrir consulta no Histórico (link profundo)
+- Cards de KPIs no topo: Total gasto, Média km/L, Custo por km, Nº abastecimentos; com delta vs. período anterior e setas de tendência
+
+### Exportar e Compartilhar
+- Exportar:
+  - Formatos: CSV, XLSX, PDF (relatório formatado), PNG (gráfico)
+  - Opções: intervalo de datas, colunas/métricas, agrupamento, separador decimal, fuso horário
+  - Lote assíncrono para grandes volumes com notificação quando pronto
+- Compartilhar:
+  - Gerar link de visualização somente leitura com expiração
+  - Enviar por e-mail com mensagem personalizada
+  - Incorporar (iframe) para intranet com token scopo limitado
+
+### Ajustes de Período e Agrupamento
+- Controle fixo no topo direito: seletor de período + dropdown de agrupamento
+- Botões rápidos: -1 período, +1 período, "Hoje", "Este mês", "Últimos 12M"
+- Sincronização: alterações refletem imediatamente nos widgets (com debounce)
+
+### Estados (Loading, Vazio, Erro)
+- Loading: skeletons de KPIs e placeholders de gráficos; spinner em Exportar desativado
+- Vazio: ilustração e dicas (tente ampliar o período, remover filtros restritos)
+- Erro: banner com ID de correlação, ação Tentar novamente e detalhes técnicos recolhíveis
+
+### Responsividade
+- Desktop: 3 colunas de widgets; tabela em aba ao lado dos gráficos
+- Tablet: 2 colunas; legendas colapsáveis; drag para rolar na área do gráfico
+- Mobile: 1 coluna; KPIs em carrossel; filtros em sheet; tabela em acordeão
+
+### Acessibilidade
+- Gráficos com descrições textuais alternativas (aria-describedby) e tabela equivalente exportável
+- Navegação por teclado em tabs de tipo e nos widgets; foco visível
+- Cores com contraste AA; não depender apenas de cor para indicar série/estado
+- aria-live para atualizações de métricas; labels claros em controles
+
+### Ações e UX Detalhadas
+- Hover em KPI mostra breakdown por top 3 veículos/postos
+- Clique em legenda alterna visibilidade da série; shift+clique isola uma série
+- Seleção em gráfico cria filtro temporário (chip) com opção de fixar
+- Duplo clique no ponto abre drilldown; botão "Voltar" retorna ao nível anterior
+- Botão "Abrir no Histórico" leva para a tela de Histórico com filtros sincronizados
+- Salvar como favorito guarda: tipo, filtros, período, agrupamento e layout dos widgets
+
+### Exemplos
+- Gastos: barras empilhadas por produto por mês, linha de custo total; tabela com top 5 postos por gasto
+- Consumo: linhas de km/L por veículo, heatmap de eficiência por dia da semana
+- Desempenho: scatter de km/L vs. custo por km por motorista com linha de tendência
+- Comparativo: colunas lado a lado de custo por litro por posto; boxplot por produto
+- Exportação: wizard com seleção de campos, preview de colunas e validação de tamanho
+
+### Navegação
+- Tabs superiores alternam tipos de relatório
+- Breadcrumb permite retornar à Home
+- Links de ação levam ao Histórico/Consultas com filtros equivalentes (deep link)
+- Favoritos acessíveis por dropdown no header; último favorito aberto por padrão (opcional)
+
+### Considerações Técnicas
+- Endpoints agregados com cache e paginação por dimensão (para drilldown)
+- Cálculo de deltas/variações no backend para consistência; timezone-aware
+- Suporte a grandes períodos via amostragem/ downsampling automático, com aviso ao usuário
+- Feature flags para gráficos pesados; lazy loading dos widgets fora da viewport
