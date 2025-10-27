@@ -11,36 +11,36 @@ Tela para criar/editar cadastro de caminhões com foco em consistência de dados
 
 ### Estrutura do Layout
 - Header  
-- Título: "Cadastro de Caminhão"  
-- Breadcrumb: Início > Frota > Caminhões > Novo | Editar  
-- Ações rápidas: Ajuda (?) e Atalhos (teclado)
+  - Título: "Cadastro de Caminhão"  
+  - Breadcrumb: Início > Frota > Caminhões > Novo | Editar  
+  - Ações rápidas: Ajuda (?) e Atalhos (teclado)
 - Conteúdo principal (grid responsivo)  
-- Coluna 1: Dados principais do caminhão  
-- Coluna 2: Upload de documentos e Histórico
+  - Coluna 1: Dados principais do caminhão  
+  - Coluna 2: Upload de documentos e Histórico
 - Barra de ações fixa no rodapé: Cancelar | Salvar
 
 ### Campos Principais
 - Placa (obrigatório)  
-- Máscara BR: AAA#A## (Mercosul) e validação por UF opcional; normalização para maiúsculas  
-- Única no sistema; checar duplicidade ao desfocar
+  - Máscara BR: AAA#A## (Mercosul) e validação por UF opcional; normalização para maiúsculas  
+  - Única no sistema; checar duplicidade ao desfocar
 - Renavam (obrigatório)  
-- 11 dígitos; validação de dígito verificador; apenas números
+  - 11 dígitos; validação de dígito verificador; apenas números
 - Modelo (obrigatório)  
-- Texto; sugestões por autocomplete (base interna)
+  - Texto; sugestões por autocomplete (base interna)
 - Fabricante (obrigatório)  
-- Select/autocomplete: Volvo, Scania, Mercedes-Benz, VW, Iveco, etc.
+  - Select/autocomplete: Volvo, Scania, Mercedes-Benz, VW, Iveco, etc.
 - Ano (obrigatório)  
-- Numérico; intervalo razoável: 1970..ano atual+1
+  - Numérico; intervalo razoável: 1970..ano atual+1
 - Cor (opcional)  
-- Select/autocomplete; permitir livre texto sob permissão
+  - Select/autocomplete; permitir livre texto sob permissão
 - Frota (obrigatório)  
-- Select da(s) frotas cadastradas; exibe código/nome; pesquisa por texto
+  - Select da(s) frotas cadastradas; exibe código/nome; pesquisa por texto
 - Status (obrigatório)  
-- Ativo, Inativo, Em manutenção, Baixado
+  - Ativo, Inativo, Em manutenção, Baixado
 - Vincular Motorista (opcional)  
-- Select com busca; mostrar CPF/ID e situação (ativo/inativo)
+  - Select com busca; mostrar CPF/ID e situação (ativo/inativo)
 - Observações (opcional)  
-- Multilinha, 0–1000 caracteres
+  - Multilinha, 0–1000 caracteres
 
 ### Upload de Documentos
 - Tipos aceitos: CRLV (PDF/JPG/PNG), Licenciamento, Foto do veículo, Outros
@@ -58,65 +58,12 @@ Tela para criar/editar cadastro de caminhões com foco em consistência de dados
 ## Wireframe: Cadastro de Motorista
 Tela para criar/editar cadastro de motoristas com foco em validação de dados legais (CPF, RG, CNH), vínculo com frota/caminhão e gestão de documentos.
 
-### Header
-- Título: "Cadastro de Motorista"
-- Breadcrumb: Início > Frota > Motoristas > Novo | Editar
-- Ações rápidas: Ajuda (?), Atalhos, Exportar (quando em modo edição)
-
-### Layout (grid responsivo)
-- Coluna Esquerda: Dados pessoais e de contato
-- Coluna Direita: CNH, vínculos, upload de documentos e histórico
-- Rodapé fixo: barra de ações com Cancelar | Salvar
-
-### Campos
-- Nome completo (obrigatório)  
-- Texto; 3–120 chars; capitalização de nomes; proibir números/símbolos indevidos
-- CPF (obrigatório)  
-- Máscara 000.000.000-00; validação de dígitos; único no sistema; checar duplicidade ao desfocar
-- RG (obrigatório)  
-- Texto/numérico conforme UF; permitir dígito/letra; 5–20 chars
-- Data de nascimento (obrigatório)  
-- Datepicker; idade mínima 18 anos
-- Endereço (obrigatório)  
-- Campos: CEP (mask 00000-000 + auto-preenchimento por API), Logradouro, Número, Complemento (opcional), Bairro, Cidade, UF (select)
-- Telefone (obrigatório)  
-- Máscara dinâmica: (00) 0000-0000 | (00) 00000-0000; DDI opcional
-- E-mail (obrigatório)  
-- Formato RFC; checagem MX opcional; evitar domínios descartáveis
-- CNH  
-- Categoria (select: A, B, C, D, E),  
-- Validade (data obrigatória; alerta quando faltarem 60 dias),  
-- Número (obrigatório; 11 dígitos),  
-- UF emissora (select),  
-- Foto (upload ou captura de câmera)
-- Frota vinculada (obrigatório)  
-- Select com busca; exibe código/nome; permite múltiplas frotas se regra do negócio permitir
-- Caminhão vinculado (opcional)  
-- Select com busca; exibe placa/modelo; bloqueia se motorista estiver inativo
-- Status (obrigatório)  
-- Ativo, Inativo, Afastado, Em treinamento
-
-### Upload de documentos
-- Tipos: CNH (frente/verso), Foto do motorista, Comprovante de residência (PDF/JPG/PNG)
-- Interações: arrastar e soltar, seleção múltipla, captura por câmera (mobile)
-- Regras: tamanho máximo 10 MB/arquivo; formatos permitidos; antivírus/scan; hash p/ evitar duplicatas
-- Metadados por anexo: tipo, data de emissão, validade (quando aplicável), observação
-- Ações: visualizar/preview, girar imagem, recortar rosto (foto), baixar, renomear, remover
-
-### Histórico
-- Timeline de eventos: criação, edição de dados sensíveis (CPF, CNH, status), mudança de frota/caminhão, uploads/remoções de documentos
-- Cada evento com: data/hora, usuário, descrição, diffs relevantes
-
-### Barra de ações (rodapé)
-- Cancelar: retorna à listagem, confirma se houver alterações não salvas
-- Salvar: validações síncronas e assíncronas; mostrar spinner; desabilita inputs durante processamento
-- Atalhos: Alt+C (Cancelar), Alt+S (Salvar)
-
-### Regras de validação
-- Nome: 3–120 chars; somente letras, espaços e hífens
-- CPF: dígitos válidos; não permitir CPF conhecido inválido (ex.: 000.000.000-00)
-- RG: tamanho 5–20; caracteres alfanuméricos e .-X
-- Data de nascimento: >= 18 anos; formato ISO ao salvar; timezone seguro
+### Campos e validações
+- Nome completo: obrigatório; 2–120 caracteres
+- CPF: obrigatório; máscara 000.000.000-00; validação de DV; único no sistema
+- RG: opcional; texto 3–20; UF emissor
+- Data de nascimento: obrigatório; idade mínima configurável; validação de data
+- Endereço + CEP: CEP com máscara; auto-preenchimento via API; número e complemento
 - E-mail: regex robusta + normalização case-insensitive; domínio válido
 - Telefone: DDD válido (ANATEL); remover máscara ao salvar
 - CNH: número com 11 dígitos; validação de DV quando aplicável; categoria obrigatória; validade futura
@@ -203,3 +150,123 @@ flowchart TB
 - Persistência: idempotência por CPF; retries exponenciais; controle de concorrência otimista (ETag/versão)
 - Auditoria: registrar alterações em CPF, CNH, status, vínculos, e dados de contato
 - Telemetria: eventos de validação falha/sucesso, upload, salvar, cancel
+
+---
+
+## Wireframe: Cadastro de Posto
+Tela para cadastrar/editar postos de abastecimento, com foco em integridade fiscal (CNPJ), localização, contatos, integração com APIs de automação e gestão documental.
+
+### Header
+- Título: "Cadastro de Posto"
+- Breadcrumb: Início > Abastecimento > Postos > Novo | Editar
+- Ações rápidas: Ajuda (?), Atalhos (teclado), Ver no mapa
+
+### Campos (com validações)
+- Nome do posto: obrigatório; 2–120 caracteres
+- CNPJ: obrigatório; máscara 00.000.000/0000-00; validação de DV; único no sistema
+- Endereço: obrigatório; rua/avenida, número, complemento; CEP com máscara 00000-000 e auto-preenchimento
+- Cidade: obrigatório; autocomplete a partir do CEP/UF; lista oficial IBGE
+- UF: obrigatório; select de 27 UFs; validar com cidade
+- Contato: nome do contato principal; 2–120 caracteres
+- E-mail: regex robusta; normalização case-insensitive; MX opcional
+- Telefone: máscara (##) #####-####; DDD válido (ANATEL); armazenar sem máscara
+- Gerente responsável: referência a usuário/colaborador; select com busca; exibir cargo/status
+- Status: obrigatório; Ativo, Inativo, Em homologação
+- Integração API/Token: chave/token secreto; gerar/renovar; exibir parcialmente ofuscado; copiar para área de transferência
+  - URL do endpoint do posto (opcional) e webhook de eventos (opcional)
+
+### Upload de documentos e fotos
+- Tipos: Contrato, Alvará, Inscrição Estadual, Fotos da fachada/bombas, Outros
+- Interações: arrastar e soltar; múltiplos; preview de imagens; reordenação por drag
+- Metadados: tipo, data de emissão/validade, observações
+- Ações por item: visualizar, baixar, renomear, definir capa, remover
+- Validações: tamanho máx 10–20 MB por arquivo; tipos permitidos (PDF/JPG/PNG/HEIC); prevenção de duplicados
+
+### Histórico de operações
+- Timeline com: criação, edições relevantes (CNPJ, endereço, status), geração/renovação de token, anexos adicionados/removidos
+- Cada evento com: usuário, data/hora, diff resumido, IP/event source
+
+### Barra de ações
+- Cancelar: retorna à listagem sem salvar alterações (confirmar se houver mudanças não salvas)
+- Salvar: valida e persiste; em sucesso, redireciona para Detalhe do Posto ou permanece com toast
+
+### Regras de validação
+- Obrigatórios: nome, CNPJ, endereço, cidade, UF, status
+- CNPJ único: bloquear duplicidade; sugerir "Ir para posto existente"
+- CEP válido: se CEP preencher cidade/UF automaticamente; permitir edição manual
+- E-mail e telefone: formatos e normalização
+- Webhook/endpoint: validar URL https; permitir HEAD de verificação opcional
+- Token: comprimento mínimo 24; apenas base64url/hex; armazenar de forma segura
+
+### Mensagens
+- Sucesso: "Posto salvo com sucesso."
+- Erro geral: "Não foi possível salvar. Verifique os campos destacados."
+- Erros por campo: CNPJ inválido/duplicado, CEP inválido, UF incompatível, e-mail/telefone inválidos
+- Alertas: "Token expira em X dias.", "Webhook não respondeu à verificação."
+
+### Acessibilidade
+- Labels for/id; aria-describedby para dicas/erros; aria-live=assertive para erros
+- Foco visível; contraste AA; navegação por teclado; áreas de upload acessíveis (role="button")
+- Botões com rótulos e ícones com aria-label; mensagens não dependentes de cor
+
+### Responsividade
+- Desktop: 2 colunas (65/35). Direita com Upload e Histórico
+- Tablet: 1–2 colunas; barra de ações fixa
+- Mobile: 1 coluna; seções colapsáveis; botões full-width; acesso à câmera no upload
+
+### Mapa interativo (opcional)
+- Exibir mapa com pin do endereço; atualizar ao alterar CEP/endereço
+- Buscar coordenadas via geocoding; permitir ajuste manual do pin
+- Mostrar raio de cobertura (opcional) e postos próximos
+
+### Fluxo principal
+1) Usuário clica em Novo Posto
+2) Preenche Nome, CNPJ, Endereço, Cidade, UF, Status, contatos
+3) (Opcional) Configura integração (endpoint/webhook) e gera token
+4) Anexa documentos e fotos
+5) Clica em Salvar
+6) Sistema valida, persiste e registra no histórico
+
+### Estados da tela
+- Inicial: formulário vazio; salvar desabilitado até mínimos obrigatórios
+- Preenchimento: validações em tempo real; CEP auto-completa; tooltip de ajuda
+- Processando: spinner; desabilitar inputs; barra de ações em loading
+- Sucesso: banner/alerta verde; redirecionar ou manter com toast e highlight do ID
+- Erro: banner vermelho; foco no primeiro erro; scroll automático para seção com erro
+- Edição: campos preenchidos; exibir data da última atualização e opção de renovar token
+
+### Wireframe (Mermaid)
+```
+mermaid
+flowchart TB
+  subgraph Header
+    H1[Cadastro de Posto]
+    H2[Breadcrumb: Início > Abastecimento > Postos > Novo|Editar]
+    H3[(Ajuda / Ver no mapa / Atalhos)]
+  end
+  subgraph Conteúdo
+    subgraph Coluna Esquerda
+      C1[Nome do posto]
+      C2[CNPJ]
+      C3[Endereço + CEP]
+      C4[Cidade]
+      C5[UF]
+      C6[Contato]
+      C7[E-mail]
+      C8[Telefone]
+      C9[Gerente responsável]
+      C10[Status]
+      C11[Integração: Endpoint/Webhook + Token]
+    end
+    subgraph Coluna Direita
+      D1[Upload de documentos e fotos]
+      D2[Histórico de operações]
+      D3[Mapa interativo (opcional)]
+    end
+  end
+  subgraph Ações
+    A1((Cancelar))
+    A2((Salvar))
+  end
+  Header --> Conteúdo --> Ações
+``
